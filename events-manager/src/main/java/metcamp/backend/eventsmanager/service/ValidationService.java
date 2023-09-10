@@ -13,7 +13,9 @@ public class ValidationService {
     public void validateCreateEvent(Event event){
         validateId(event.getId());
         validateName(event.getName());
-        //validateDates(event.getStartDateTime(), event.getEndDateTime());
+        validateDates(event.getStartDateTime(), event.getEndDateTime());
+        validateAttendeess(event.getAttendees());
+        validateOrganizer(event.getOrganizer());
     }
 
     public void validateName (String name) {
@@ -44,4 +46,20 @@ public class ValidationService {
     public boolean validateAttendeess(int cantidad){
         return cantidad > 0;
     }
+
+    public void validateOrganizer (String org) {
+        if (org.isEmpty()){
+            throw new ValidationException("name is required");
+        }
+        if (org.isBlank()){
+            throw new ValidationException("name is required");
+        }
+        if (org.length() < 3){
+            throw new ValidationException("name is too short");
+        }
+        if (org.length() > 10){
+            throw new ValidationException("name is too long");
+        }
+    }
+
 }
