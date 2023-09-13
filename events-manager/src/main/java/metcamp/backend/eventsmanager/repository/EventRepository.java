@@ -55,7 +55,7 @@ public class EventRepository {
         }
     }
 
-    public Optional<Event> find (int id){
+    public Optional<Event> find(int id){
         Optional<Event> result = Optional.empty();
         for (Event e:events){
             if(e.getId() == id){
