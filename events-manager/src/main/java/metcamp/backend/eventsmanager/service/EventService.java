@@ -59,38 +59,25 @@ public class EventService {
         }
     }
 
-
-
-
-    public Boolean deleteEvent(int id) {
+    public void deleteEvent(int id) {
         Optional<Event> foundEvent = repository.find(id);
-        Boolean result = foundEvent.isPresent();
-        if (result) {
+        if (foundEvent.isPresent()) {
             repository.delete(foundEvent.get().getId());
+        } else{
+            throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
-        return result;
     }
-
-
 
     public Event updateEvent(int id, String json) {
         Optional<Event> foundEvent = repository.find(id);
         if (foundEvent.isPresent()) {
             Event newEventData = mapperUtils.mapToEvent(json);
             repository.update(id, newEventData);
-            //return new EventResponse(200, "Event updated", newEventData);
             return newEventData;
         } else {
-            //logger.info("El id ingresado es {}", id);
-            //return new Response(404, "Event Not Found");
-            throw new ValidationException("Event Not Found"); //404
+            throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
     }
-
-
-
-
-
 
 
 }

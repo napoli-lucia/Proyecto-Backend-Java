@@ -44,10 +44,8 @@ public class ValidationServiceTest {
     void validateAttendeessTestWithCantPositiva(){
         //given
         int cantidad = 1;
-        //when
-        boolean resultado = service.validateAttendeess(cantidad);
         //then
-        assertTrue(resultado);
+        assertDoesNotThrow(() -> service.validateAttendeess(cantidad));
     }
 
     @Test
@@ -55,10 +53,8 @@ public class ValidationServiceTest {
     void validateAttendeessTestWithCantNegativa(){
         //given
         int cantidad = -1;
-        //when
-        boolean resultado = service.validateAttendeess(cantidad);
         //then
-        assertFalse(resultado);
+        assertThrows(ValidationException.class, () -> service.validateAttendeess(cantidad));
     }
 
     @Test
@@ -66,10 +62,8 @@ public class ValidationServiceTest {
     void validateAttendeessTestWithCantZero(){
         //given
         int cantidad = 0;
-        //when
-        boolean resultado = service.validateAttendeess(cantidad);
         //then
-        assertFalse(resultado);
+        assertThrows(ValidationException.class, () -> service.validateAttendeess(cantidad));
     }
 
 
@@ -153,7 +147,7 @@ public class ValidationServiceTest {
     }
 
     @Test
-    @DisplayName("Probando el metodo validateOrganizer sin nombre")
+    @DisplayName("Probando el metodo validateOrganizer con nombre en blanco")
     void validateOrganizerTestWithBlankName(){
         //given
         String org = "    ";
@@ -175,7 +169,7 @@ public class ValidationServiceTest {
     }
 
     @Test
-    @DisplayName("Probando el metodo validateOrganizer nombre corto")
+    @DisplayName("Probando el metodo validateOrganizer nombre largo")
     void validateOrganizerTestWithLongName(){
         //given
         String org = "qwertyuiopasdfghjklzxcvbnm";

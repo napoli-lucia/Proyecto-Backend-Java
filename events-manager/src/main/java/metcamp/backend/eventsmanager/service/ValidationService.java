@@ -43,8 +43,12 @@ public class ValidationService {
         }
     }
 
-    public boolean validateAttendeess(int cantidad){
-        return cantidad > 0;
+    public void validateAttendeess(int cantidad){
+        if (cantidad==0){
+            throw new ValidationException("attendees must not be zero");
+        } else if (cantidad < 0){
+            throw new ValidationException("attendees must be positive");
+        }
     }
 
     public void validateOrganizer (String org) {
