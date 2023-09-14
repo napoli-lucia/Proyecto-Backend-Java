@@ -24,41 +24,24 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<Map<String,Object>> getAllEvents(){
-
         ArrayList<Event> temporalList = eventService.getAllEvents();
-        return temporalList.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT) //204
-                : ResponseEntity.ok(Map.of("events",temporalList)); //200
-
+        return ResponseEntity.ok(Map.of("events",temporalList)); //200
     }
 
     @GetMapping ("/{id}")
     public ResponseEntity<Map<String,Object>> getEventById(@PathVariable int id){
-
-        Optional<Event> foundEvent = eventService.getEventById(id);
-        return foundEvent.isPresent()
-                ? ResponseEntity.ok(Map.of("event",foundEvent)) //200
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND); //404
-
-
+        Event foundEvent = eventService.getEventById(id);
+        return ResponseEntity.ok(Map.of("event",foundEvent)); //200
     }
 
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody String body){
-
-        try {
-            Event event = eventService.createEvent(body);
-            return ResponseEntity.status(201).body(Map.of("Event Created",event)); //201
-        } catch (ConvertionException e){
-            return new ResponseEntity<>("Malformed event", HttpStatus.BAD_REQUEST); // 400
-        } catch (RepoException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); //500
-        } catch (ValidationException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);//400
-        }
-
+    public ResponseEntity<Map<String,Object>> createEvent(@RequestBody String body){
+        Event event = eventService.createEvent(body);
+        return ResponseEntity.status(201).body(Map.of("Event Created",event)); //201
     }
+
+
 
 
     @DeleteMapping ("/{id}")
