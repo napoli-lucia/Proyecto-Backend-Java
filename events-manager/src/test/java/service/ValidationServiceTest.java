@@ -89,6 +89,17 @@ public class ValidationServiceTest {
     }
 
     @Test
+    @DisplayName("Probando el metodo validateNames con nombre en blanco")
+    void validateNameTestWithBlankName(){
+        //given
+        String name = "  ";
+        //when
+        ValidationException e = assertThrows(ValidationException.class, () -> service.validateName(name));
+        //then
+        assertEquals("name is required", e.getMessage());
+    }
+
+    @Test
     @DisplayName("Probando el metodo validateNames nombre corto")
     void validateNameTestWithShortName(){
         //given
@@ -143,7 +154,7 @@ public class ValidationServiceTest {
         //when
         ValidationException e = assertThrows(ValidationException.class, () -> service.validateOrganizer(org));
         //then
-        assertEquals("name is required", e.getMessage());
+        assertEquals("organizer name is required", e.getMessage());
     }
 
     @Test
@@ -154,7 +165,7 @@ public class ValidationServiceTest {
         //when
         ValidationException e = assertThrows(ValidationException.class, () -> service.validateOrganizer(org));
         //then
-        assertEquals("name is required", e.getMessage());
+        assertEquals("organizer name is required", e.getMessage());
     }
 
     @Test
@@ -165,7 +176,7 @@ public class ValidationServiceTest {
         //when
         ValidationException e = assertThrows(ValidationException.class, () -> service.validateOrganizer(org));
         //then
-        assertEquals("name is too short", e.getMessage());
+        assertEquals("organizer name is too short", e.getMessage());
     }
 
     @Test
@@ -176,7 +187,52 @@ public class ValidationServiceTest {
         //when
         ValidationException e = assertThrows(ValidationException.class, () -> service.validateOrganizer(org));
         //then
-        assertEquals("name is too long", e.getMessage());
+        assertEquals("organizer name is too long", e.getMessage());
     }
+
+    //***TESTS event type***//
+    @Test
+    @DisplayName("Probando el metodo validateEventType - Happy path")
+    void validateEventTypeTestWithTipoCorrecto(){
+        //given
+        String type = "aniversario";
+        //then
+        assertDoesNotThrow(() -> service.validateEventType(type));
+    }
+
+    @Test
+    @DisplayName("Probando el metodo validateEventType sin nombre")
+    void validateEventTypeTestWithNoName(){
+        //given
+        String type = "";
+        //when
+        ValidationException e = assertThrows(ValidationException.class, () -> service.validateEventType(type));
+        //then
+        assertEquals("type is required: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Probando el metodo validateEventType con nombre en blanco")
+    void validateEventTypeTestWithBlankName(){
+        //given
+        String type = "    ";
+        //when
+        ValidationException e = assertThrows(ValidationException.class, () -> service.validateEventType(type));
+        //then
+        assertEquals("type is required: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Probando el metodo validateOrganizer nombre incorrecto")
+    void validateEventTypeTestWithShortName(){
+        //given
+        String type = "nuevo-evento";
+        //when
+        ValidationException e = assertThrows(ValidationException.class, () -> service.validateEventType(type));
+        //then
+        assertEquals("type must be one of these: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB", e.getMessage());
+    }
+
+
 
 }

@@ -1,11 +1,12 @@
 package metcamp.backend.eventsmanager.service;
 
 
+import metcamp.backend.eventsmanager.entities.model.*;
 import metcamp.backend.eventsmanager.exceptions.ValidationException;
-import metcamp.backend.eventsmanager.entities.model.Event;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ValidationService {
@@ -16,11 +17,14 @@ public class ValidationService {
         validateDates(event.getStartDateTime(), event.getEndDateTime());
         validateAttendeess(event.getAttendees());
         validateOrganizer(event.getOrganizer());
+        validateEventType(String.valueOf(event.getEventType()));
+        validatePrices(event.getPrices());
     }
+
 
     public void validateName (String name) {
         //Validar si el nombre no esta vacio y que tenga al menos 5 caracteres
-        if (name.isEmpty()){
+        if (name.isEmpty() || name.isBlank()){
             throw new ValidationException("name is required");
         }
         if (name.length() < 5){
@@ -52,18 +56,80 @@ public class ValidationService {
     }
 
     public void validateOrganizer (String org) {
-        if (org.isEmpty()){
-            throw new ValidationException("name is required");
-        }
-        if (org.isBlank()){
-            throw new ValidationException("name is required");
+        if (org.isEmpty() || org.isBlank()){
+            throw new ValidationException("organizer name is required");
         }
         if (org.length() < 3){
-            throw new ValidationException("name is too short");
+            throw new ValidationException("organizer name is too short");
         }
         if (org.length() > 10){
-            throw new ValidationException("name is too long");
+            throw new ValidationException("organizer name is too long");
         }
     }
+
+    public void validateEventType (String eventType) {
+        if (eventType.isEmpty() || eventType.isBlank()){
+            throw new ValidationException("type is required: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB");
+        }
+        if(!eventTypeContains(eventType)){
+            throw new ValidationException("type must be one of these: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB");
+        }
+    }
+
+
+    public void validatePrices (List<Price> prices) {
+        if (!prices.isEmpty()){
+            for(Price price : prices){
+                validatePrice(price);
+            }
+        }
+    }
+
+    private void validatePrice(Price price){
+        String type = String.valueOf(price.getType());
+        String currency = String.valueOf(price.getCurrency());
+        if(!ticketTypeContains(type) || type.isEmpty() || type.isBlank()){
+            throw new ValidationException("type must be one of these: REGULAR_FULL_PASS, REGULAR_ONE_DAY, VIP_FULL_PASS, VIP_ONE_DAY");
+        }
+        if(!currencyContains(currency) || currency.isEmpty() || currency.isBlank()){
+            throw new ValidationException("currency must be one of these: ARS,CLP,COP,USD");
+        }
+        if(price.getValue()<=0){
+            throw new ValidationException("price must be positive");
+        }
+
+    }
+
+
+    //Funciones de enum
+    private boolean eventTypeContains(String type) {
+        for (EventType eventType : EventType.values()) {
+            if (eventType.name().equalsIgnoreCase(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean ticketTypeContains(String type) {
+        for (TicketType ticketType : TicketType.values()) {
+            if (ticketType.name().equalsIgnoreCase(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean currencyContains(String c) {
+        for (Currency currency : Currency.values()) {
+            if (currency.name().equalsIgnoreCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
 
 }
