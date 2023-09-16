@@ -43,14 +43,16 @@ public class EventRepository {
     }
 
     private void save(){
+        String path = "src/main/resources/repository/events.json";
         try {
             //Mappear lista de evento a string
             String datos = mapperUtils.mapToJson(events);
             //Convertir el string a bytes
             byte[] bytes = datos.getBytes(StandardCharsets.UTF_8);
             //Escribir el archivo
-            Files.write(Paths.get("src/main/resources/repository/events.json"), bytes);
+            Files.write(Paths.get(path), bytes);
         } catch (IOException io) {
+            logger.fatal("Error writing file located at {} ", path);
             throw new RepoException("Error writing file");
         }
     }

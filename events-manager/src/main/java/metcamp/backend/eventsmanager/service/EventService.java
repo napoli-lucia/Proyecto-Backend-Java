@@ -41,6 +41,7 @@ public class EventService {
     public Event getEventById(int id){
         Optional<Event> foundEvent = repository.find(id);
         if (!foundEvent.isPresent()) {
+            logger.info("El id ingresado es {}", id);
             throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
         return foundEvent.get();
@@ -52,6 +53,7 @@ public class EventService {
         Optional<Event> foundEvent = repository.find(event.getId());
 
         if (foundEvent.isPresent()) {
+            logger.info("El evento con id {} ya existe", event.getId());
             throw new EventAlreadyExistsException("Event already exists"); //400
         } else {
             repository.add(event);
@@ -64,6 +66,7 @@ public class EventService {
         if (foundEvent.isPresent()) {
             repository.delete(foundEvent.get().getId());
         } else{
+            logger.info("El id ingresado es {}", id);
             throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
     }
@@ -75,6 +78,7 @@ public class EventService {
             repository.update(id, newEventData);
             return newEventData;
         } else {
+            logger.info("El id ingresado es {}", id);
             throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
     }
