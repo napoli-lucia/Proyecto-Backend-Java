@@ -24,7 +24,7 @@ public class ValidationService {
 
     public void validateName (String name) {
         //Validar si el nombre no esta vacio y que tenga al menos 5 caracteres
-        if (name.isEmpty() || name.isBlank()){
+        if (name == null || name.isBlank()){
             throw new ValidationException("name is required");
         }
         if (name.length() < 5){
@@ -41,6 +41,12 @@ public class ValidationService {
     }
 
     public void validateDates(LocalDateTime startDate, LocalDateTime endDate){
+        if (startDate == null){
+            throw new ValidationException("startDate is required");
+        }
+        if (endDate == null){
+            throw new ValidationException("endDate is required");
+        }
         //Verificar que start sea antes que end
         if (startDate.isAfter(endDate)){
             throw new ValidationException("startDate must be before endDate");
@@ -56,7 +62,7 @@ public class ValidationService {
     }
 
     public void validateOrganizer (String org) {
-        if (org.isEmpty() || org.isBlank()){
+        if (org == null || org.isBlank()){
             throw new ValidationException("organizer name is required");
         }
         if (org.length() < 3){
@@ -68,7 +74,7 @@ public class ValidationService {
     }
 
     public void validateEventType (String eventType) {
-        if (eventType.isEmpty() || eventType.isBlank()){
+        if (eventType.isBlank()){
             throw new ValidationException("type is required: ANIVERSARIO, CLASE_METCAMP, ENCUENTRO_METLAB");
         }
         if(!eventTypeContains(eventType)){
@@ -78,7 +84,7 @@ public class ValidationService {
 
 
     public void validatePrices (List<Price> prices) {
-        if (!prices.isEmpty()){
+        if (prices!=null && !prices.isEmpty()){
             for(Price price : prices){
                 validatePrice(price);
             }
@@ -88,10 +94,10 @@ public class ValidationService {
     private void validatePrice(Price price){
         String type = String.valueOf(price.getType());
         String currency = String.valueOf(price.getCurrency());
-        if(!ticketTypeContains(type) || type.isEmpty() || type.isBlank()){
+        if(!ticketTypeContains(type) || type.isBlank()){
             throw new ValidationException("type must be one of these: REGULAR_FULL_PASS, REGULAR_ONE_DAY, VIP_FULL_PASS, VIP_ONE_DAY");
         }
-        if(!currencyContains(currency) || currency.isEmpty() || currency.isBlank()){
+        if(!currencyContains(currency) || currency.isBlank()){
             throw new ValidationException("currency must be one of these: ARS,CLP,COP,USD");
         }
         if(price.getValue()<=0){

@@ -16,12 +16,10 @@ public class EventService {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final MapperUtils mapperUtils;
     private final EventRepository repository;
     private final ValidationService validationService;
 
     public EventService(MapperUtils mapperUtils, EventRepository repository, ValidationService validationService) {
-        this.mapperUtils = mapperUtils;
         this.repository = repository;
         this.validationService = validationService;
     }
@@ -30,12 +28,7 @@ public class EventService {
     //**Funciones de los eventos**//
 
     public ArrayList<Event> getAllEvents() {
-        ArrayList<Event> temporalList = repository.getEvents();
-
-        if (temporalList.isEmpty()) {
-            throw new NoContentException(); //204
-        }
-        return temporalList;
+        return repository.getEvents();
     }
 
     public Event getEventById(int id){
@@ -47,8 +40,7 @@ public class EventService {
         return foundEvent.get();
     }
 
-    public Event createEvent(String json) {
-        Event event = mapperUtils.mapToEvent(json);
+    public Event createEvent(Event event) {
         validationService.validateCreateEvent(event);
         Optional<Event> foundEvent = repository.find(event.getId());
 
@@ -63,22 +55,23 @@ public class EventService {
 
     public void deleteEvent(int id) {
         Optional<Event> foundEvent = repository.find(id);
+        logger.info("El id ingresado es {}", id);
         if (foundEvent.isPresent()) {
             repository.delete(foundEvent.get().getId());
+            logger.info("El evento con id {} fue eliminado", id);
         } else{
-            logger.info("El id ingresado es {}", id);
             throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
     }
 
-    public Event updateEvent(int id, String json) {
+    public Event updateEvent(int id, Event newEventData) {
         Optional<Event> foundEvent = repository.find(id);
+        logger.info("El id ingresado es {}", id);
         if (foundEvent.isPresent()) {
-            Event newEventData = mapperUtils.mapToEvent(json);
             repository.update(id, newEventData);
+            logger.info("El evento con id {} fue editado", id);
             return newEventData;
         } else {
-            logger.info("El id ingresado es {}", id);
             throw new EventNotFoundException(String.format("Event %s doesn't exists", id)); //404
         }
     }
