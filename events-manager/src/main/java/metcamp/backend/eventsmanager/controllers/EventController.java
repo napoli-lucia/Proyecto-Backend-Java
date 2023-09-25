@@ -5,6 +5,8 @@ import metcamp.backend.eventsmanager.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -26,7 +28,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String,Object>> createEvent(@RequestBody Event body){
+    public ResponseEntity<Map<String,Object>> createEvent(@Valid @RequestBody Event body){
         return ResponseEntity.status(201).body(Map.of("Event Created",eventService.createEvent(body))); //201
     }
 

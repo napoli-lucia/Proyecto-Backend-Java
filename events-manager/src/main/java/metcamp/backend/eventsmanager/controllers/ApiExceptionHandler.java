@@ -1,15 +1,23 @@
 package metcamp.backend.eventsmanager.controllers;
 
 import metcamp.backend.eventsmanager.exceptions.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Map;
+
 @ControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @ExceptionHandler(EventNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND) //404
@@ -25,13 +33,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //400
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException  e){
+        logger.error(String.format("Invalid Data: %s", e.getMessage()), e);
+        return ResponseEntity.badRequest().body(new ErrorMessage(HttpStatus.BAD_REQUEST, e.getFieldError().getDefaultMessage()));
+    }
+
+
     @ExceptionHandler({RepoException.class, Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) //500
     public ResponseEntity<ErrorMessage> repoExceptionHandler(Exception e){
         logger.error(String.format("Internal Server Error: %s", e.getMessage()), e);
         return ResponseEntity.internalServerError().body(new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
-
 
 
 }

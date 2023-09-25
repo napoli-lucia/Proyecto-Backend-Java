@@ -12,11 +12,11 @@ import java.util.List;
 public class ValidationService {
 
     public void validateCreateEvent(Event event){
-        validateId(event.getId());
-        validateName(event.getName());
+        //validateId(event.getId());
+        //validateName(event.getName());
         validateDates(event.getStartDateTime(), event.getEndDateTime());
-        validateAttendeess(event.getAttendees());
-        validateOrganizer(event.getOrganizer());
+        //validateAttendeess(event.getAttendees());
+        //validateOrganizer(event.getOrganizer());
         validateEventType(String.valueOf(event.getEventType()));
         validatePrices(event.getPrices());
     }

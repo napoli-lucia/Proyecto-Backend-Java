@@ -12,6 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,11 +27,28 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Event {
 
+    @Valid
+
+    @Positive(message = "id must be positive and not zero")
     private int id;
+
     private EventType eventType;
+
+    @NotNull(message = "name is required")
+    @NotBlank(message = "name is required")
+    @Size(min = 5, max = 15, message = "name must be between 5 and 15 long")
     private String name;
+
+    @Positive(message = "attendees must be positive and not zero")
     private int attendees;
+
+    @NotNull(message = "organizer name is required")
+    @NotBlank(message = "organizer name is required")
+    @Size(min = 5, message = "organizer name is too short")
+    @Size(max = 10, message = "organizer name is too long")
     private String organizer;
+
+
     private List<Price> prices;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
