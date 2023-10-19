@@ -1,4 +1,4 @@
-package service;
+package metcamp.backend.eventsmanager.service;
 
 import metcamp.backend.eventsmanager.exceptions.ValidationException;
 import metcamp.backend.eventsmanager.service.ValidationService;
