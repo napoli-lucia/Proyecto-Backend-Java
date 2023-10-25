@@ -17,11 +17,9 @@ public class EventService {
     private static final Logger logger = LogManager.getLogger();
 
     private final EventRepository repository;
-    private final ValidationService validationService;
 
-    public EventService(MapperUtils mapperUtils, EventRepository repository, ValidationService validationService) {
+    public EventService(MapperUtils mapperUtils, EventRepository repository) {
         this.repository = repository;
-        this.validationService = validationService;
     }
 
 
@@ -41,7 +39,11 @@ public class EventService {
     }
 
     public Event createEvent(Event event) {
-        validationService.validateCreateEvent(event);
+
+        if (event.getStartDateTime().isAfter(event.getEndDateTime())){
+            throw new ValidationException("startDate must be before endDate");
+        }
+
         Optional<Event> foundEvent = repository.find(event.getId());
 
         if (foundEvent.isPresent()) {

@@ -23,7 +23,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//@ValidateDate
 public class Event {
 
     @Valid
@@ -38,7 +37,6 @@ public class Event {
     private String eventType;
 
 
-    @NotNull(message = "name is required")
     @NotBlank(message = "name is required")
     @Size(min = 5, message = "name is too short")
     @Size(max = 15, message = "name is too long")
@@ -50,7 +48,6 @@ public class Event {
     private Integer attendees;
 
 
-    @NotNull(message = "organizer name is required")
     @NotBlank(message = "organizer name is required")
     @Size(min = 3, message = "organizer name is too short")
     @Size(max = 10, message = "organizer name is too long")
@@ -59,16 +56,17 @@ public class Event {
 
     private List<@Valid Price> prices;
 
-    //@NotNull(message = "startDate is required")
-    //@Future(message = "startDate must be in the future")
+
+    @NotNull(message = "startDate is required")
+    @Future(message = "startDate must be in the future")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty(value = "start_date")
     private LocalDateTime startDateTime;
 
-    //@NotNull(message = "endDate is required")
-    //@Future(message = "endDate must be in the future")
+    @NotNull(message = "endDate is required")
+    @Future(message = "endDate must be in the future")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
